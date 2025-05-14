@@ -1,5 +1,7 @@
 import mineflayer from 'mineflayer';
 import { pathfinder, Movements, goals } from 'mineflayer-pathfinder';
+import {isSmashMessage, parseSmashMessage, SmashMessage} from "./smashMessage";
+
 
 const bot = mineflayer.createBot({
     host: 'smashmc.eu',
@@ -22,11 +24,20 @@ bot.once('spawn', () => {
     console.log('spawned');
 });
 
-bot.on('chat', (username, message) => {
-    console.log("asdasdasd: " + message);
-    if (username === bot.username) return;
+/*bot.on('message', (jsonMsg) => {
+    console.log("JSON message:", jsonMsg);
+});*/
 
-    console.log("message: " + message);
+bot.on('messagestr', (messagestr) => {
+    if(!isSmashMessage(messagestr)) return;
+
+    let smashMessage: null | SmashMessage = parseSmashMessage(messagestr);
+
+    if(!smashMessage) return;
+    let username = smashMessage.username;
+    let message = smashMessage.message;
+
+    if (username === bot.username) return;
 
     if (message === 'come') {
         const player = bot.players[username]?.entity;
