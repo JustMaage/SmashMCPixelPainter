@@ -45,5 +45,23 @@ bot.on('messagestr', (messagestr) => {
             const { GoalFollow } = goals;
             bot.pathfinder.setGoal(new GoalFollow(player, 1));
         }
+    } else if (message === 'fly') {
+        const player = bot.players[username]?.entity;
+        if (player) {
+            bot.chat('Flying to you!');
+            // Fly to the player's position
+            bot.creative.flyTo(player.position).then(err => {
+                console.log('Arrived at destination!');
+            });
+        }
+    } else if (message === 'land') {
+        // Stop flying by setting the bot back to the ground
+        const currentPos = bot.entity.position;
+        const groundPos = currentPos.clone();
+        groundPos.y = Math.floor(groundPos.y); // Snap to block position
+
+        bot.creative.flyTo(groundPos).then(r =>
+            console.log('Landed successfully!')
+        );
     }
 });
